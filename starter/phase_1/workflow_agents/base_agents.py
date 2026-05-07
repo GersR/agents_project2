@@ -7,87 +7,80 @@ import uuid
 from datetime import datetime
 from openai import OpenAI
 
-client = OpenAI(
-    base_url= base_url,
-     api_key=os.getenv(
-         api_key
-     ),  
-)
-
 # DirectPromptAgent class definition
 class DirectPromptAgent:
     
     def __init__(self, openai_api_key):
         # Initialize the agent
         # TODO: 2 - Define an attribute named openai_api_key to store the OpenAI API key provided to this class.
+        self.openai_api_key = openai_api_key
 
     def respond(self, prompt):
         # Generate a response using the OpenAI API
-        client = OpenAI(api_key=self.openai_api_key)
+        client = OpenAI(api_key=self.openai_api_key, base_url="https://openai.vocareum.com/v1")
         response = client.chat.completions.create(
-            model=# TODO: 3 - Specify the model to use (gpt-3.5-turbo)
+            model="gpt-3.5-turbo",# TODO: 3 - Specify the model to use (gpt-3.5-turbo)
             messages=[
-                # TODO: 4 - Provide the user's prompt here. Do not add a system prompt.
+                {"role":"user", "content":prompt}# TODO: 4 - Provide the user's prompt here. Do not add a system prompt.
             ],
             temperature=0
         )
         # TODO: 5 - Return only the textual content of the response (not the full JSON response).
-
+        return response.choices[0].message.content
         
-'''
+
 # AugmentedPromptAgent class definition
 class AugmentedPromptAgent:
     def __init__(self, openai_api_key, persona):
         """Initialize the agent with given attributes."""
         # TODO: 1 - Create an attribute for the agent's persona
         self.openai_api_key = openai_api_key
+        self.persona = persona
 
     def respond(self, input_text):
         """Generate a response using OpenAI API."""
-        client = OpenAI(api_key=self.openai_api_key)
+        client = OpenAI(api_key=self.openai_api_key, base_url="https://openai.vocareum.com/v1")
 
         # TODO: 2 - Declare a variable 'response' that calls OpenAI's API for a chat completion.
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 # TODO: 3 - Add a system prompt instructing the agent to assume the defined persona and explicitly forget previous context.
+                {"role": "system", "content":  f"You are {self.persona}. Forget any previous context and respond solely based on this persona."},
                 {"role": "user", "content": input_text}
             ],
             temperature=0
         )
 
-        return  # TODO: 4 - Return only the textual content of the response, not the full JSON payload.
-'''
+        return  response.choices[0].message.content# TODO: 4 - Return only the textual content of the response, not the full JSON payload.
 
-'''
 # KnowledgeAugmentedPromptAgent class definition
 class KnowledgeAugmentedPromptAgent:
     def __init__(self, openai_api_key, persona, knowledge):
         """Initialize the agent with provided attributes."""
         self.persona = persona
         # TODO: 1 - Create an attribute to store the agent's knowledge.
+        self.knowledge = knowledge
         self.openai_api_key = openai_api_key
 
     def respond(self, input_text):
         """Generate a response using the OpenAI API."""
-        client = OpenAI(api_key=self.openai_api_key)
+        client = OpenAI(api_key=self.openai_api_key, base_url="https://openai.vocareum.com/v1")
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 # TODO: 2 - Construct a system message including:
-                #           - The persona with the following instruction:
-                #             "You are _persona_ knowledge-based assistant. Forget all previous context."
-                #           - The provided knowledge with this instruction:
-                #             "Use only the following knowledge to answer, do not use your own knowledge: _knowledge_"
-                #           - Final instruction:
-                #             "Answer the prompt based on this knowledge, not your own."
+                {"role":"system", "content":f"""
+                You are {self.persona} knowledge-based assistant. Forget all previous context.
+                Use only the following knowledge to answer, do not use your own knowledge:{self.knowledge}
+                Answer the prompt based on this knowledge, not your own."""},                
                 
                 # TODO: 3 - Add the user's input prompt here as a user message.
+                {"role":"user", "content":input_text}
             ],
             temperature=0
         )
         return response.choices[0].message.content
-'''
 
 # RAGKnowledgePromptAgent class definition
 class RAGKnowledgePromptAgent:
@@ -175,6 +168,10 @@ class RAGKnowledgePromptAgent:
                 "end_char": end
             })
 
+            # break the loop if we have reached the end of the text
+            if end == len(text):
+                break
+
             start = end - self.chunk_overlap
             chunk_id += 1
 
@@ -227,7 +224,7 @@ class RAGKnowledgePromptAgent:
 
         return response.choices[0].message.content
 
-'''
+
 class EvaluationAgent:
     
     def __init__(self, openai_api_key, persona, evaluation_criteria, worker_agent, max_interactions):
@@ -286,7 +283,7 @@ class EvaluationAgent:
         return {
             # TODO: 7 - Return a dictionary containing the final response, evaluation, and number of iterations
         }   
-'''
+
 
 '''
 class RoutingAgent():
