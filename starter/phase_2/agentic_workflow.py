@@ -26,9 +26,9 @@ action_planning_agent=ActionPlanningAgent(openai_api_key, knowledge_action_plann
 # Product Manager - Knowledge Augmented Prompt Agent
 persona_product_manager = "You are a Product Manager, you are responsible for defining the user stories for a product."
 knowledge_product_manager = (
-    "Stories are defined by writing sentences with a persona, an action, and a desired outcome. "
-    "The sentences always start with: As a "
-    "Write several stories for the product spec below, where the personas are the different users of the product. "
+    """Stories are defined by writing sentences with a persona, an action, and a desired outcome. "
+    The sentences always start with: As a 
+    Write several stories for the product spec below, where the personas are the different users of the product. """
     # TODO: 5 - Complete this knowledge string by appending the product_spec loaded in TODO 3
     + product_spec
 )
@@ -55,7 +55,12 @@ product_manager_evaluation_agent = EvaluationAgent(
 
 # Program Manager - Knowledge Augmented Prompt Agent
 persona_program_manager = "You are a Program Manager, you are responsible for defining the features for a product."
-knowledge_program_manager = "Features of a product are defined by organizing similar user stories into cohesive groups."
+knowledge_program_manager = (
+    """Features of a product are defined by organizing similar user stories into cohesive groups. 
+    Define features for the following product spec:
+    """
+    + product_spec
+    )
 
 # Instantiate a program_manager_knowledge_agent using 'persona_program_manager' and 'knowledge_program_manager'
 # (This is a necessary step before TODO 8. Students should add the instantiation code here.)
@@ -87,10 +92,13 @@ program_manager_evaluation_agent = EvaluationAgent(
 
 # Development Engineer - Knowledge Augmented Prompt Agent
 persona_dev_engineer = "You are a Development Engineer, you are responsible for defining the development tasks for a product."
-knowledge_dev_engineer = """Development tasks are defined by identifying what needs to be built to implement each user story.
-You MUST output actual tasks, not a description of how to create tasks. 
-Each task must contain real content, not placeholders or process descriptions.
-"""
+knowledge_dev_engineer = (
+    """Development tasks are defined by identifying what needs to be built to implement each user story.
+    You MUST output actual tasks, not a description of how to create tasks. 
+    Each task must contain real content, not placeholders or process descriptions.
+    Define development tasks for the following product spec:
+    """
+    + product_spec)
 # Instantiate a development_engineer_knowledge_agent using 'persona_dev_engineer' and 'knowledge_dev_engineer'
 # (This is a necessary step before TODO 9. Students should add the instantiation code here.)
 development_engineer_knowledge_agent=KnowledgeAugmentedPromptAgent(openai_api_key,persona_dev_engineer,knowledge_dev_engineer)
