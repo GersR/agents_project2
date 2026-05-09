@@ -37,7 +37,7 @@ product_manager_knowledge_agent=KnowledgeAugmentedPromptAgent(openai_api_key,per
 # Product Manager - Evaluation Agent
 # TODO: 7 - Define the persona and evaluation criteria for a Product Manager evaluation agent and instantiate it as product_manager_evaluation_agent. This agent will evaluate the product_manager_knowledge_agent.
 # The evaluation_criteria should specify the expected structure for user stories (e.g., "As a [type of user], I want [an action or feature] so that [benefit/value].").
-persona_product_manager_eval = "You are Product Manager evaluation agent. You assess responses from a Product Manager worker agent."
+persona_product_manager_eval = "You are an evaluation agent that checks the answers of other worker agents"
 product_manager_evaluation_criteria="""Evaluate responses against these criteria:
 **User Story Structure**: Must follow the format:
    'As a [type of user], I want [an action or feature] so that [benefit/value].'
